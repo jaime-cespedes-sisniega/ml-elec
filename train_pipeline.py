@@ -1,12 +1,12 @@
 from pathlib import Path
 
 import config
-from model_pipeline import ModelPipeline
 from processing.data_utils import (download_data,
                                    load_data,
                                    load_pipeline,
                                    save_pipeline,
                                    split_data)
+from training.model_pipeline import ModelPipeline
 from sklearn.metrics import accuracy_score
 
 
