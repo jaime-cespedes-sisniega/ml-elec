@@ -1,17 +1,15 @@
+from processing.preprocessors import features_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
-
-from processing.preprocessors import features_transformer
 
 
 class ModelPipeline:
 
     def __init__(self, random_state):
-        self.pipeline = Pipeline(steps=[('transformer',
-                                         features_transformer),
-                                        ('clf',
-                                         RandomForestClassifier(random_state=random_state))])
+        self.pipeline = Pipeline(
+            steps=[('transformer', features_transformer),
+                   ('clf', RandomForestClassifier(random_state=random_state))])
         self.target_encoder = LabelEncoder()
 
     def fit(self, X, y):

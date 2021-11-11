@@ -18,4 +18,3 @@ TARGET_NAME = 'class'
 TRAIN_RATIO = 0.5
 
 RANDOM_STATE = 31
-

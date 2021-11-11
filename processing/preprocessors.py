@@ -1,5 +1,5 @@
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 
 
 features_transformer = ColumnTransformer([('ot_encoder',

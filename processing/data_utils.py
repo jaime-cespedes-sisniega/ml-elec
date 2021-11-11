@@ -1,11 +1,10 @@
-import urllib.request
-from urllib.error import URLError
-import joblib
 from pathlib import Path
-
-import pandas as pd
+from urllib.error import URLError
+import urllib.request
 
 import config
+import joblib
+import pandas as pd
 
 
 class DownloadDataError(Exception):
