@@ -1,13 +1,12 @@
 from pathlib import Path
 
 import config
-from processing.data_utils import (download_data,
-                                   load_data,
+from processing.data_utils import (load_data,
                                    load_pipeline,
-                                   save_pipeline,
-                                   split_data)
-from training.model_pipeline import ModelPipeline
+                                   prepare_data_from_url,
+                                   save_pipeline)
 from sklearn.metrics import accuracy_score
+from training.model_pipeline import ModelPipeline
 
 
 def run_pipeline(train_path,
@@ -25,19 +24,6 @@ def run_pipeline(train_path,
 
     save_pipeline(pipeline=model_pipeline,
                   name=pipeline_file_name)
-
-
-def prepare_data_from_url(train_path,
-                          train_ratio,
-                          test_path,
-                          data_path,
-                          download_data_url):
-    download_data(url=download_data_url,
-                  path=data_path)
-    split_data(raw_path=data_path,
-               train_path=train_path,
-               test_path=test_path,
-               train_ratio=train_ratio)
 
 
 if __name__ == '__main__':

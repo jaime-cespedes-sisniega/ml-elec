@@ -11,7 +11,7 @@ class DownloadDataError(Exception):
     pass
 
 
-def download_data(url, path):
+def _download_data(url, path):
     try:
         urllib.request.urlretrieve(url,
                                    path)
@@ -19,10 +19,10 @@ def download_data(url, path):
         raise DownloadDataError(f'Data cannot be downloaded: {e}')
 
 
-def split_data(raw_path,
-               train_path,
-               test_path,
-               train_ratio=0.5):
+def _split_data(raw_path,
+                train_path,
+                test_path,
+                train_ratio=0.5):
     df = pd.read_csv(raw_path)
 
     split_idx = int(df.shape[0] * train_ratio)
@@ -60,3 +60,16 @@ def load_pipeline(name):
     pipeline = joblib.load(save_path)
     print(f'Pipeline {save_path} loaded')
     return pipeline
+
+
+def prepare_data_from_url(train_path,
+                          train_ratio,
+                          test_path,
+                          data_path,
+                          download_data_url):
+    _download_data(url=download_data_url,
+                   path=data_path)
+    _split_data(raw_path=data_path,
+                train_path=train_path,
+                test_path=test_path,
+                train_ratio=train_ratio)
