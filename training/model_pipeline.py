@@ -1,10 +1,11 @@
+from training.base_pipeline import BasePipeline
 from processing.preprocessors import features_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
 
-class ModelPipeline:
+class ModelPipeline(BasePipeline):
 
     def __init__(self, random_state):
         self.pipeline = Pipeline(
