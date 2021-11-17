@@ -1,6 +1,6 @@
+import configparser
 from pathlib import Path
 
-import config
 from processing.data_utils import (load_data,
                                    load_pipeline,
                                    prepare_data_from_url,
@@ -12,7 +12,7 @@ from training.model_pipeline import ModelPipeline
 def run_pipeline(train_path,
                  target_name,
                  random_state,
-                 pipeline_file_name):
+                 pipeline_path):
 
     train = load_data(path=train_path)
 
@@ -23,36 +23,50 @@ def run_pipeline(train_path,
     model_pipeline.fit(X_train, y_train)
 
     save_pipeline(pipeline=model_pipeline,
-                  name=pipeline_file_name)
+                  path=pipeline_path)
 
 
 if __name__ == '__main__':
-    train_path = Path(config.DATA_PROCESSED_PATH,
-                      config.TRAIN_FILE_NAME)
-    test_path = Path(config.DATA_PROCESSED_PATH,
-                     config.TEST_FILE_NAME)
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    config_data = config['DATA']
+    config_pipeline = config['PIPELINE']
 
-    if config.DOWNLOAD_DATA:
+    data_base_path = config_data['DATA_BASE_PATH']
+    data_processed_path = Path(data_base_path,
+                               config_data['DATA_PROCESSED_PATH'])
+
+    train_path = Path(data_processed_path,
+                      config_pipeline['TRAIN_FILE_NAME'])
+    test_path = Path(data_processed_path,
+                     config_pipeline['TEST_FILE_NAME'])
+
+    if config_data.getboolean('DOWNLOAD_DATA'):
+
         prepare_data_from_url(train_path=train_path,
-                              train_ratio=config.TRAIN_RATIO,
+                              train_ratio=float(config_pipeline['TRAIN_RATIO']),
                               test_path=test_path,
-                              data_path=Path(config.DATA_RAW_PATH,
-                                             config.RAW_FILE_NAME),
-                              download_data_url=config.DOWNLOAD_DATA_URL)
+                              data_path=Path(data_base_path,
+                                             config_data['DATA_RAW_PATH'],
+                                             config_pipeline['RAW_FILE_NAME']),
+                              download_data_url=config_data['DOWNLOAD_DATA_URL'])
+
+    pipeline_path = Path(config_pipeline['PIPELINE_PATH'],
+                         config_pipeline['PIPELINE_FILE_NAME'])
+
+    target_name = config_pipeline['TARGET_NAME']
 
     run_pipeline(train_path=train_path,
-                 target_name=config.TARGET_NAME,
-                 random_state=config.RANDOM_STATE,
-                 pipeline_file_name=config.PIPELINE_FILE_NAME)
+                 target_name=target_name,
+                 random_state=int(config_pipeline['RANDOM_STATE']),
+                 pipeline_path=pipeline_path)
 
-    # Test pipeline
-    test = load_data(path=Path(config.DATA_PROCESSED_PATH,
-                               config.TEST_FILE_NAME))
+    test = load_data(path=test_path)
 
-    X_test = test.loc[:, test.columns != config.TARGET_NAME]
-    y_test = test[config.TARGET_NAME].to_numpy()
+    X_test = test.loc[:, test.columns != target_name]
+    y_test = test[target_name].to_numpy()
 
-    model_pipeline = load_pipeline(name=config.PIPELINE_FILE_NAME)
+    model_pipeline = load_pipeline(path=pipeline_path)
 
     y_test_pred = model_pipeline.predict(X_test)
 
