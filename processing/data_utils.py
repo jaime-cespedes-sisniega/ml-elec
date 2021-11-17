@@ -50,13 +50,11 @@ def load_data(path):
 
 
 def save_pipeline(pipeline, path):
-    # save_path = Path(config.PIPELINE_PATH, name)
     joblib.dump(pipeline, path)
     print(f'Pipeline saved in {path}')
 
 
 def load_pipeline(path):
-    # save_path = Path(config.PIPELINE_PATH, name)
     pipeline = joblib.load(path)
     print(f'Pipeline {path} loaded')
     return pipeline
