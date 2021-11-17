@@ -1,8 +1,6 @@
-from pathlib import Path
 from urllib.error import URLError
 import urllib.request
 
-import config
 import joblib
 import pandas as pd
 
