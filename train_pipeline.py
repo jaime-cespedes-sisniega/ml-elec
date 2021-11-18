@@ -1,12 +1,12 @@
 import configparser
 from pathlib import Path
 
-from training.processing.data_utils import (load_data,
+from ml.processing.data_utils import (load_data,
                                             load_pipeline,
                                             prepare_data_from_url,
                                             save_pipeline)
 from sklearn.metrics import accuracy_score
-from training.pipeline.model_pipeline import ModelPipeline
+from ml.pipeline.model_pipeline import ModelPipeline
 
 
 def run_pipeline(train_path,
