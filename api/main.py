@@ -2,9 +2,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict
 
-from fastapi import FastAPI
-from api.utils import load_model
 from api.data_models import Request, Response
+from api.utils import load_model
+from fastapi import FastAPI
+
 
 api = FastAPI()
 
