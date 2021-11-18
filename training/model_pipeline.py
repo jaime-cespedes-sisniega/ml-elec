@@ -24,3 +24,7 @@ class ModelPipeline(BasePipeline):
     def transform_target(self, y):
         y_encoded = self.target_encoder.transform(y)
         return y_encoded
+
+    def inverse_transform_target(self, y_encoded):
+        y = self.target_encoder.inverse_transform(y_encoded)
+        return y

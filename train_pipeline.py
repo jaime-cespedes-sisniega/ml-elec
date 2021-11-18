@@ -16,7 +16,7 @@ def run_pipeline(train_path,
 
     train = load_data(path=train_path)
 
-    X_train = train.loc[:, train.columns != target_name]
+    X_train = train.loc[:, train.columns != target_name].to_numpy()
     y_train = train[target_name].to_numpy()
 
     model_pipeline = ModelPipeline(random_state=random_state)
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     test = load_data(path=test_path)
 
-    X_test = test.loc[:, test.columns != target_name]
+    X_test = test.loc[:, test.columns != target_name].to_numpy()
     y_test = test[target_name].to_numpy()
 
     model_pipeline = load_pipeline(path=pipeline_path)

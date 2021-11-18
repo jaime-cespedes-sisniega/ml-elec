@@ -27,11 +27,13 @@ def _split_data(raw_path,
 
     train = df.iloc[:split_idx]
     train = _prepare_data(data=train)
-    train.to_csv(train_path)
+    train.to_csv(train_path,
+                 index=False)
 
     test = df.iloc[split_idx:]
     test = _prepare_data(data=test)
-    test.to_csv(test_path)
+    test.to_csv(test_path,
+                index=False)
 
 
 def _prepare_data(data):
