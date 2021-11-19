@@ -18,7 +18,14 @@ model = load_model(path=Path(settings.model_path,
 @api.post('/',
           response_model=Response,
           status_code=200)
-def predict(data: Request):
+def predict(data: Request) -> Dict[str, str]:
+    """Predict endpoint
+
+    :param data: body request data
+    :type data: Request
+    :return: Predict response dict
+    :rtype: Dict[str: str]
+    """
     timestamp = datetime.today().isoformat()
     pred = _make_prediction(data)
     response = {'timestamp': timestamp,
