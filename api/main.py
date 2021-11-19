@@ -2,15 +2,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict
 
+from api.config import Settings
 from api.data_models import Request, Response
 from api.utils import load_model
 from fastapi import FastAPI
 
 
 api = FastAPI()
+settings = Settings()
 
-model = load_model(path=Path('api', 'models',
-                             'model_pipeline.joblib'))
+model = load_model(path=Path(settings.model_path,
+                             settings.model_file_name))
 
 
 @api.post('/',
