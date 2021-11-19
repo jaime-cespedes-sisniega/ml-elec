@@ -61,15 +61,17 @@ if __name__ == '__main__':
                  random_state=int(config_pipeline['RANDOM_STATE']),
                  pipeline_path=pipeline_path)
 
-    test = load_data(path=test_path)
+    if config_pipeline.getboolean('TEST'):
 
-    X_test = test.loc[:, test.columns != target_name].to_numpy()
-    y_test = test[target_name].to_numpy()
+        test = load_data(path=test_path)
 
-    model_pipeline = load_pipeline(path=pipeline_path)
+        X_test = test.loc[:, test.columns != target_name].to_numpy()
+        y_test = test[target_name].to_numpy()
 
-    y_test_pred = model_pipeline.predict(X_test)
+        model_pipeline = load_pipeline(path=pipeline_path)
 
-    y_test_encoded = model_pipeline.transform_target(y_test)
+        y_test_pred = model_pipeline.predict(X_test)
 
-    print(accuracy_score(y_test_encoded, y_test_pred))
+        y_test_encoded = model_pipeline.transform_target(y_test)
+
+        print(accuracy_score(y_test_encoded, y_test_pred))
