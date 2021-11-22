@@ -72,6 +72,4 @@ if __name__ == '__main__':
 
         y_test_pred = model_pipeline.predict(X_test)
 
-        y_test_encoded = model_pipeline.transform_target(y_test)
-
-        print(accuracy_score(y_test_encoded, y_test_pred))
+        print(accuracy_score(y_test, y_test_pred))

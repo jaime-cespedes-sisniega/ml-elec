@@ -18,13 +18,6 @@ class ModelPipeline(BasePipeline):
         self.pipeline.fit(X, y_encoded)
 
     def predict(self, X):
-        pred = self.pipeline.predict(X)
+        pred_encoded = self.pipeline.predict(X)
+        pred = self.target_encoder.inverse_transform(pred_encoded)
         return pred
-
-    def transform_target(self, y):
-        y_encoded = self.target_encoder.transform(y)
-        return y_encoded
-
-    def inverse_transform_target(self, y_encoded):
-        y = self.target_encoder.inverse_transform(y_encoded)
-        return y
