@@ -22,8 +22,9 @@ def run_pipeline(train_path,
     model_pipeline = ModelPipeline(random_state=random_state)
     model_pipeline.fit(X_train, y_train)
 
-    # TODO: Save pipeline to a model registry or repo where the model pipeline can be used by the API.
-    # TODO: The current implementation only saves the pipeline to a project´s folder.
+    # TODO: Save pipeline to a model registry or repo where the model´s
+    # TODO: pipeline can be used by the API.
+    # TODO: Current implementation only saves the pipeline to a project´s folder.
     save_pipeline(pipeline=model_pipeline,
                   path=pipeline_path)
 
