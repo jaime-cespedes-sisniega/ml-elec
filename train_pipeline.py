@@ -2,7 +2,7 @@ import configparser
 from pathlib import Path
 
 from ml_pipeline.model_pipeline import ModelPipeline
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 from utils.data import (load_data,
                         load_pipeline,
                         prepare_data_from_url,
@@ -75,4 +75,4 @@ if __name__ == '__main__':
 
         y_test_pred = model_pipeline.predict(X_test)
 
-        print(accuracy_score(y_test, y_test_pred))
+        print(classification_report(y_test, y_test_pred))

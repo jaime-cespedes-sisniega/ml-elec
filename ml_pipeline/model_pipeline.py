@@ -10,7 +10,8 @@ class ModelPipeline(BasePipeline):
     def __init__(self, random_state):
         self.pipeline = Pipeline(
             steps=[('transformer', features_transformer),
-                   ('clf', RandomForestClassifier(random_state=random_state))])
+                   ('clf', RandomForestClassifier(random_state=random_state,
+                                                  class_weight='balanced'))])
         self.target_encoder = LabelEncoder()
 
     def fit(self, X, y):
