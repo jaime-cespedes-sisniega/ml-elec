@@ -9,22 +9,33 @@ from utils.data import (load_data,
                         save_pipeline)
 
 
-def run_pipeline(train_path,
-                 target_name,
-                 random_state,
-                 pipeline_path):
+def run_pipeline(train_path: Path,
+                 target_name: str,
+                 random_state: int,
+                 pipeline_path: Path) -> None:
+    """Run pipeline
 
+    :param train_path: path where train data is stored
+    :type train_path: Path
+    :param target_name: label class name
+    :type target_name: str
+    :param random_state: model pipeline random state
+    :type random_state: int
+    :param pipeline_path: path where pipeline will be stored
+    :type pipeline_path: Path
+    :rtype: None
+    """
     train = load_data(path=train_path)
 
-    X_train = train.loc[:, train.columns != target_name].to_numpy()
+    x_train = train.loc[:, train.columns != target_name].to_numpy()
     y_train = train[target_name].to_numpy()
 
     model_pipeline = ModelPipeline(random_state=random_state)
-    model_pipeline.fit(X_train, y_train)
+    model_pipeline.fit(x_train, y_train)
 
     # TODO: Save pipeline to a model registry or repo where the model´s
     # TODO: pipeline can be used by the API.
-    # TODO: Current implementation only saves the pipeline to a project´s folder.
+    # TODO: Current implementation only saves the pipeline project´s folder.
     save_pipeline(pipeline=model_pipeline,
                   path=pipeline_path)
 
@@ -52,7 +63,8 @@ if __name__ == '__main__':
                               data_path=Path(data_base_path,
                                              config_data['DATA_RAW_PATH'],
                                              config_pipeline['RAW_FILE_NAME']),
-                              download_data_url=config_data['DOWNLOAD_DATA_URL'])
+                              download_data_url=config_data[
+                                  'DOWNLOAD_DATA_URL'])
 
     pipeline_path = Path(config_pipeline['PIPELINE_PATH'],
                          config_pipeline['PIPELINE_FILE_NAME'])
