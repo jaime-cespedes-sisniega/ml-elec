@@ -2,7 +2,7 @@ import configparser
 from pathlib import Path
 
 from ml_pipeline.model_pipeline import ModelPipeline
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import classification_report
 from utils.data import (load_data,
                         load_pipeline,
                         prepare_data_from_url,
