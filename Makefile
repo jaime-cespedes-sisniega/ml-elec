@@ -10,7 +10,7 @@ install:
 				 pip3 install -r requirements/requirements.txt \
 				              -r requirements/tox_requirements.txt
 
-train:
+pipeline:
 	$(VENV)/bin/python train_pipeline.py
 
 clean_data:
