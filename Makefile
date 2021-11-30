@@ -23,4 +23,4 @@ clean_models:
 clean_virtualenv:
 	rm -rf $(VENV)
 
-clean_all: clean_data clean_models clean_virtualenv
+clean_all: clean_data clean_models
