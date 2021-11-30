@@ -32,10 +32,3 @@ As mentioned before, the `ml_pipeline` wrapper package can be used outside the p
 ```bash
 pip install git+https://github.com/jaime-cespedes-sisniega/ml-elec.git@v0.1.2
 ```
-
-### Optional
-
-To remove all reproducibility steps (data, generated model and virtualenv), the following command can be executed.
-```bash
-make clean_all
-```
