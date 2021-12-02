@@ -2,8 +2,6 @@ from pathlib import Path
 from urllib.error import URLError
 import urllib.request
 
-import joblib
-from ml_pipeline.base_pipeline import BasePipeline
 import pandas as pd
 
 
@@ -58,33 +56,6 @@ def load_data(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path)
 
     return df
-
-
-def save_pipeline(pipeline: BasePipeline,
-                  path: Path):
-    """Save pipeline in a given path
-
-    :param pipeline: pipeline to be saved
-    :type pipeline: Path
-    :param path: path where pipeline is going to be saved
-    :type path: Path
-    :rtype: None
-    """
-    joblib.dump(pipeline, path)
-    print(f'Pipeline saved in {path}')
-
-
-def load_pipeline(path: Path) -> BasePipeline:
-    """Load pipeline from a given path
-
-    :param path: path where pipeline is stored
-    :type path: Path
-    :return loaded pipeline
-    :rtype: BasePipeline
-    """
-    pipeline = joblib.load(path)
-    print(f'Pipeline {path} loaded')
-    return pipeline
 
 
 def prepare_data_from_url(train_path: Path,

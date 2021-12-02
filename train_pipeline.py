@@ -1,18 +1,19 @@
 import configparser
+import logging
 from pathlib import Path
 
 from ml_pipeline.model_pipeline import ModelPipeline
+from ml_pipeline.registry import ModelPipelineRegistryClient
 from sklearn.metrics import classification_report
 from utils.data import (load_data,
-                        load_pipeline,
-                        prepare_data_from_url,
-                        save_pipeline)
+                        prepare_data_from_url)
 
 
 def run_pipeline(train_path: Path,
                  target_name: str,
                  random_state: int,
-                 pipeline_path: Path) -> None:
+                 pipeline_path: Path,
+                 model_registry: ModelPipelineRegistryClient) -> None:
     """Run pipeline
 
     :param train_path: path where train data is stored
@@ -33,14 +34,13 @@ def run_pipeline(train_path: Path,
     model_pipeline = ModelPipeline(random_state=random_state)
     model_pipeline.fit(x_train, y_train)
 
-    # TODO: Save pipeline to a model registry or repo where the model´s
-    # TODO: pipeline can be used by the API.
-    # TODO: Current implementation only saves the pipeline project´s folder.
-    save_pipeline(pipeline=model_pipeline,
-                  path=pipeline_path)
+    model_registry.save_pipeline(pipeline=model_pipeline,
+                                 name=pipeline_path.name)
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+
     config = configparser.ConfigParser()
     config.read('config.ini')
     config_data = config['DATA']
@@ -71,10 +71,16 @@ if __name__ == '__main__':
 
     target_name = config_pipeline['TARGET_NAME']
 
+    config_database = config['DATABASE']
+    model_registry = ModelPipelineRegistryClient(host=config_database['HOST'],
+                                                 port=int(config_database['PORT']),
+                                                 db_name=config_database['NAME'])
+
     run_pipeline(train_path=train_path,
                  target_name=target_name,
                  random_state=int(config_pipeline['RANDOM_STATE']),
-                 pipeline_path=pipeline_path)
+                 pipeline_path=pipeline_path,
+                 model_registry=model_registry)
 
     if config_pipeline.getboolean('TEST'):
 
@@ -83,7 +89,7 @@ if __name__ == '__main__':
         X_test = test.loc[:, test.columns != target_name].to_numpy()
         y_test = test[target_name].to_numpy()
 
-        model_pipeline = load_pipeline(path=pipeline_path)
+        model_pipeline = model_registry.load_pipeline(name=pipeline_path.name)
 
         y_test_pred = model_pipeline.predict(X_test)
 
