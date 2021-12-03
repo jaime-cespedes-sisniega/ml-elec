@@ -5,7 +5,7 @@ with open('requirements/setup_requirements.txt') as f:
 
 setup(
     name='ml-pipeline',
-    version='0.1.2',
+    version='0.1.3',
     packages=['ml_pipeline'],
     install_requires=required
 )
