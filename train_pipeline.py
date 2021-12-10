@@ -72,11 +72,12 @@ if __name__ == '__main__':
     target_name = config_pipeline['TARGET_NAME']
 
     config_database = config['DATABASE']
-    model_registry = ModelPipelineRegistryClient(host=config_database['HOST'],
-                                                 port=int(config_database['PORT']),
-                                                 username=config_database['USER'],
-                                                 password=config_database['PASSWORD'],
-                                                 authSource=config_database['NAME'])
+    model_registry = ModelPipelineRegistryClient(
+        host=config_database['HOST'],
+        port=int(config_database['PORT']),
+        username=config_database['USER'],
+        password=config_database['PASSWORD'],
+        authSource=config_database['NAME'])
 
     run_pipeline(train_path=train_path,
                  target_name=target_name,
