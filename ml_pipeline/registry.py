@@ -20,15 +20,11 @@ class DatabaseError(Exception):
 
 class ModelPipelineRegistryClient:
 
-    def __init__(self,
-                 host: str,
-                 port: int,
-                 db_name: str):
+    def __init__(self, **db_kwargs):
         try:
-            self.client = pymongo.MongoClient(host=host,
-                                              port=port)
-            self.db = self.client[db_name]
-        except pymongo.errors.PyMongoError as e:
+            self.client = pymongo.MongoClient(**db_kwargs)
+            self.db = self.client[db_kwargs['authSource']]
+        except (pymongo.errors.PyMongoError, KeyError) as e:
             raise DatabaseError(f'Connection with database '
                                 f'could not be established: {e}')
         self.fs = gridfs.GridFS(self.db)
