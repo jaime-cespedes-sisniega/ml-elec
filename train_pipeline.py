@@ -75,9 +75,9 @@ if __name__ == '__main__':
     model_registry = ModelPipelineRegistryClient(
         host=config_database['HOST'],
         port=int(config_database['PORT']),
-        username=config_database['USER'],
+        username=config_database['USERNAME'],
         password=config_database['PASSWORD'],
-        authSource=config_database['NAME'])
+        authSource=config_database['DATABASE'])
 
     run_pipeline(train_path=train_path,
                  target_name=target_name,
