@@ -11,16 +11,28 @@ import pymongo
 
 
 class LoadingError(Exception):
+    """Loading custom error exception"""
+
     pass
 
 
 class DatabaseError(Exception):
+    """Database custom error exception"""
+
     pass
 
 
 class ModelPipelineRegistryClient:
+    """Model pipeline registry client class"""
 
-    def __init__(self, **db_kwargs):
+    def __init__(self,
+                 **db_kwargs: dict) -> None:
+        """Init method to set db args
+
+        :param db_kwargs: db arguments
+        :type db_kwargs: dict
+        :rtype: None
+        """
         try:
             self.client = pymongo.MongoClient(**db_kwargs)
             self.db = self.client[db_kwargs['authSource']]
