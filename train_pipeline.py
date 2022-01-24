@@ -2,18 +2,21 @@ import configparser
 import logging
 from pathlib import Path
 
-from ml_pipeline.model_pipeline import ModelPipeline
-from ml_pipeline.registry import ModelPipelineRegistryClient
+from ml_pipeline.preprocessors import features_transformer
+from ml_pipeline.utils import save_model
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
+from sklearn.pipeline import Pipeline
 from utils.data import (load_data,
                         prepare_data_from_url)
+from utils.registry import set_model_registry_server
 
 
 def run_pipeline(train_path: Path,
                  target_name: str,
                  random_state: int,
-                 pipeline_path: Path,
-                 model_registry: ModelPipelineRegistryClient) -> None:
+                 model_name: str) -> None:
     """Run pipeline
 
     :param train_path: path where train data is stored
@@ -31,11 +34,15 @@ def run_pipeline(train_path: Path,
     x_train = train.loc[:, train.columns != target_name].to_numpy()
     y_train = train[target_name].to_numpy()
 
-    model_pipeline = ModelPipeline(random_state=random_state)
+    model_pipeline = Pipeline(
+        steps=[('transformer', features_transformer),
+               ('clf', RandomForestClassifier(random_state=random_state,
+                                              class_weight='balanced'))])
+
     model_pipeline.fit(x_train, y_train)
 
-    model_registry.save_pipeline(pipeline=model_pipeline,
-                                 name=pipeline_path.name)
+    save_model(model_pipeline=model_pipeline,
+               model_name=model_name)
 
 
 if __name__ == '__main__':
@@ -71,19 +78,23 @@ if __name__ == '__main__':
 
     target_name = config_pipeline['TARGET_NAME']
 
-    config_database = config['DATABASE']
-    model_registry = ModelPipelineRegistryClient(
-        host=config_database['HOST'],
-        port=int(config_database['PORT']),
-        username=config_database['USERNAME'],
-        password=config_database['PASSWORD'],
-        authSource=config_database['DATABASE'])
+    config_model_registry = config['MODEL_REGISTRY']
+    set_model_registry_server(
+        mlflow_host=config_model_registry['MLFLOW_HOST'],
+        mlflow_port=int(config_model_registry['MLFLOW_PORT']),
+        mlflow_username=config_model_registry['MLFLOW_USERNAME'],
+        mlflow_password=config_model_registry['MLFLOW_PASSWORD'],
+        minio_host=config_model_registry['MINIO_HOST'],
+        minio_port=int(config_model_registry['MINIO_PORT']),
+        minio_username=config_model_registry['MINIO_USERNAME'],
+        minio_password=config_model_registry['MINIO_PASSWORD'])
+
+    model_name = config_model_registry['MODEL_NAME']
 
     run_pipeline(train_path=train_path,
                  target_name=target_name,
                  random_state=int(config_pipeline['RANDOM_STATE']),
-                 pipeline_path=pipeline_path,
-                 model_registry=model_registry)
+                 model_name=model_name)
 
     if config_pipeline.getboolean('TEST'):
 
@@ -92,7 +103,11 @@ if __name__ == '__main__':
         X_test = test.loc[:, test.columns != target_name].to_numpy()
         y_test = test[target_name].to_numpy()
 
-        model_pipeline = model_registry.load_pipeline(name=pipeline_path.name)
+        # Load the latest model version
+        # None indicates that the model is neither in Staging nor in Production
+        model_pipeline = mlflow.sklearn.load_model(
+            model_uri=f"models:/{model_name}/None"
+        )
 
         y_test_pred = model_pipeline.predict(X_test)
 
