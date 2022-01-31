@@ -1,6 +1,7 @@
 import os
 
 import mlflow
+import sklearn
 
 
 def set_model_registry_server(mlflow_host: str,
@@ -36,3 +37,17 @@ def set_model_registry_server(mlflow_host: str,
     os.environ['MLFLOW_S3_ENDPOINT_URL'] = f'http://{minio_host}:{minio_port}'
     os.environ['AWS_ACCESS_KEY_ID'] = minio_username
     os.environ['AWS_SECRET_ACCESS_KEY'] = minio_password
+
+
+def save_model(model_pipeline: sklearn.pipeline.Pipeline,
+               model_name: str) -> None:
+    """Save model to MLflow
+
+    :param model_pipeline: model pipeline object
+    :type model_pipeline: sklearn.pipeline.Pipeline
+    :param model_name: model name
+    :type model_name: str
+    """
+    mlflow.sklearn.log_model(model_pipeline,
+                             artifact_path="sk_learn",
+                             registered_model_name=model_name)

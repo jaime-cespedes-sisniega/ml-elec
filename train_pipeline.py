@@ -3,14 +3,14 @@ import logging
 from pathlib import Path
 
 from ml_pipeline.preprocessors import features_transformer
-from ml_pipeline.utils import save_model
 import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.pipeline import Pipeline
 from utils.data import (load_data,
                         prepare_data_from_url)
-from utils.registry import set_model_registry_server
+from utils.registry import (save_model,
+                            set_model_registry_server)
 
 
 def run_pipeline(train_path: Path,
