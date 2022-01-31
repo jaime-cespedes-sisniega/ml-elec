@@ -1,3 +1,7 @@
--r setup_requirements.txt
+scikit-learn==1.0.1
+numpy==1.21.4
+pymongo==4.0
+mlflow==1.23.0
+boto3==1.20.41
 joblib==1.1.0
 pandas==1.3.4
