@@ -51,3 +51,18 @@ def save_model(model_pipeline: sklearn.pipeline.Pipeline,
     mlflow.sklearn.log_model(model_pipeline,
                              artifact_path="sk_learn",
                              registered_model_name=model_name)
+
+
+def load_model(model_name: str,
+               stage: str = 'None') -> sklearn.pipeline.Pipeline:
+    """Load model from MLflow
+
+    :param model_name: model name
+    :type model_name: str
+    :param stage: model´s stage
+    :type stage: str
+    """
+    model_pipeline = mlflow.sklearn.load_model(
+        model_uri=f"models:/{model_name}/{stage}"
+    )
+    return model_pipeline

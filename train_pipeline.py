@@ -3,13 +3,13 @@ import logging
 from pathlib import Path
 
 from ml_pipeline.preprocessors import features_transformer
-import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.pipeline import Pipeline
 from utils.data import (load_data,
                         prepare_data_from_url)
-from utils.registry import (save_model,
+from utils.registry import (load_model,
+                            save_model,
                             set_model_registry_server)
 
 
@@ -105,9 +105,8 @@ if __name__ == '__main__':
 
         # Load the latest model version
         # None indicates that the model is neither in Staging nor in Production
-        model_pipeline = mlflow.sklearn.load_model(
-            model_uri=f"models:/{model_name}/None"
-        )
+        model_pipeline = load_model(model_name=model_name,
+                                    stage='None')
 
         y_test_pred = model_pipeline.predict(X_test)
 
