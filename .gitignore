@@ -131,9 +131,3 @@ dmypy.json
 
 # PyCharm
 .idea/
-
-# Data folder
-data/
-
-# Model folder
-model/

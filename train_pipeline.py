@@ -6,8 +6,7 @@ from ml_pipeline.preprocessors import features_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.pipeline import Pipeline
-from utils.data import (load_data,
-                        prepare_data_from_url)
+from utils.data import load_data
 from utils.registry import (load_model,
                             save_model,
                             set_model_registry_server)
@@ -53,25 +52,14 @@ if __name__ == '__main__':
     config_data = config['DATA']
     config_pipeline = config['PIPELINE']
 
-    data_base_path = config_data['DATA_BASE_PATH']
-    data_processed_path = Path(data_base_path,
-                               config_data['DATA_PROCESSED_PATH'])
+    data_path = config_data['PATH']
 
-    train_path = Path(data_processed_path,
+    train_path = Path(data_path,
                       config_pipeline['TRAIN_FILE_NAME'])
-    test_path = Path(data_processed_path,
+    validation_path = Path(data_path,
+                           config_pipeline['VALIDATION_FILE_NAME'])
+    test_path = Path(data_path,
                      config_pipeline['TEST_FILE_NAME'])
-
-    if config_data.getboolean('DOWNLOAD_DATA'):
-
-        prepare_data_from_url(train_path=train_path,
-                              train_ratio=float(config_pipeline['TRAIN_RATIO']),
-                              test_path=test_path,
-                              data_path=Path(data_base_path,
-                                             config_data['DATA_RAW_PATH'],
-                                             config_pipeline['RAW_FILE_NAME']),
-                              download_data_url=config_data[
-                                  'DOWNLOAD_DATA_URL'])
 
     pipeline_path = Path(config_pipeline['PIPELINE_PATH'],
                          config_pipeline['PIPELINE_FILE_NAME'])
