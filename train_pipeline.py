@@ -2,11 +2,9 @@ import configparser
 import logging
 from pathlib import Path
 
+from ml_pipeline.test import test_pipeline
 from ml_pipeline.train import run_pipeline
-from sklearn.metrics import classification_report
-from utils.data import load_data
-from utils.registry import (load_model,
-                            set_model_registry_server)
+from utils.registry import set_model_registry_server
 
 
 if __name__ == '__main__':
@@ -53,16 +51,6 @@ if __name__ == '__main__':
 
     if config_pipeline.getboolean('TEST'):
 
-        test = load_data(path=test_path)
-
-        X_test = test.loc[:, test.columns != target_name].to_numpy()
-        y_test = test[target_name].to_numpy()
-
-        # Load the latest model version
-        # None indicates that the model is neither in Staging nor in Production
-        model_pipeline = load_model(model_name=model_name,
-                                    stage='None')
-
-        y_test_pred = model_pipeline.predict(X_test)
-
-        print(classification_report(y_test, y_test_pred))
+        test_pipeline(test_path=test_path,
+                      target_name=target_name,
+                      model_name=model_name)
