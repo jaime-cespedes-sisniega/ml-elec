@@ -16,7 +16,7 @@ data:
 	$(VENV)/bin/dvc pull
 
 pipeline:
-	$(VENV)/bin/python train_pipeline.py
+	$(VENV)/bin/python run_pipeline.py
 
 clean_virtualenv:
 	rm -rf $(VENV)
