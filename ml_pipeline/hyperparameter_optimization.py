@@ -34,6 +34,7 @@ class Objective:
     def __init__(self,
                  x: np.ndarray,
                  y: np.ndarray,
+                 experiment_name: str,
                  random_state: int,
                  cv: int = 3) -> None:
         """Objective __init__
@@ -42,6 +43,8 @@ class Objective:
         :type x: np.ndarray
         :param y: x
         :type y: np.ndarray
+        :param experiment_name: experiment name
+        :type experiment_name: str
         :param random_state: random_state
         :type random_state: int
         :param cv: cross-validation folds
@@ -54,7 +57,7 @@ class Objective:
         self.cv = cv
         self.scorer = make_scorer(score_func=f1_score,
                                   pos_label='UP')
-        mlflow.set_experiment('ml-elec')
+        mlflow.set_experiment(experiment_name)
 
     def _suggest_hyperparameters(self,
                                  trial: optuna.Trial) -> HyperparametersDict:
@@ -122,6 +125,7 @@ class Objective:
 
 def hyperparameter_optimization(x_train: np.ndarray,
                                 y_train: np.ndarray,
+                                experiment_name: str,
                                 random_state: int,
                                 cv: int = 3,
                                 n_trials: int = 20) -> optuna.Study:
@@ -131,6 +135,8 @@ def hyperparameter_optimization(x_train: np.ndarray,
     :type x_train: np.ndarray
     :param y_train: y_train
     :type y_train: np.ndarray
+    :param experiment_name: experiment name
+    :type experiment_name: str
     :param random_state: random_state
     :type random_state: int
     :param cv: cross-validation folds
@@ -142,6 +148,7 @@ def hyperparameter_optimization(x_train: np.ndarray,
     """
     objective = Objective(x=x_train,
                           y=y_train,
+                          experiment_name=experiment_name,
                           random_state=random_state,
                           cv=cv)
     study = optuna.create_study(direction='maximize')

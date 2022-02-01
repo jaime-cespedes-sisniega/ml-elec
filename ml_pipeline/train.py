@@ -37,6 +37,7 @@ def train_pipeline(train_path: Path,
 
     study = hyperparameter_optimization(x_train=x_train,
                                         y_train=y_train,
+                                        experiment_name=model_name,
                                         random_state=random_state,
                                         cv=cv,
                                         n_trials=n_trials)
