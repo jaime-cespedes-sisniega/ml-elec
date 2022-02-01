@@ -56,13 +56,8 @@ if __name__ == '__main__':
 
     train_path = Path(data_path,
                       config_pipeline['TRAIN_FILE_NAME'])
-    validation_path = Path(data_path,
-                           config_pipeline['VALIDATION_FILE_NAME'])
     test_path = Path(data_path,
                      config_pipeline['TEST_FILE_NAME'])
-
-    pipeline_path = Path(config_pipeline['PIPELINE_PATH'],
-                         config_pipeline['PIPELINE_FILE_NAME'])
 
     target_name = config_pipeline['TARGET_NAME']
 
