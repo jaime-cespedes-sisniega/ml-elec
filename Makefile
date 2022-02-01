@@ -15,3 +15,8 @@ pipeline:
 
 clean_virtualenv:
 	rm -rf $(VENV)
+
+clean_data:
+	rm data/*.csv
+
+clean: clean_data clean_virtualenv
