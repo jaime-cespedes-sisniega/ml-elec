@@ -2,6 +2,7 @@ import configparser
 import logging
 from pathlib import Path
 
+from ml_pipeline.hyperparameter_optimization import hyperparameter_optimization
 from ml_pipeline.preprocessors import features_transformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
@@ -15,7 +16,9 @@ from utils.registry import (load_model,
 def run_pipeline(train_path: Path,
                  target_name: str,
                  random_state: int,
-                 model_name: str) -> None:
+                 model_name: str,
+                 n_trials: int,
+                 cv: int) -> None:
     """Run pipeline
 
     :param train_path: path where train data is stored
@@ -24,8 +27,12 @@ def run_pipeline(train_path: Path,
     :type target_name: str
     :param random_state: model pipeline random state
     :type random_state: int
-    :param pipeline_path: path where pipeline will be stored
-    :type pipeline_path: Path
+    :param model_name: model name
+    :type model_name: str
+    :param n_trials: optimization trials
+    :type n_trials: int
+    :param cv: cross-validation folds
+    :type cv: int
     :rtype: None
     """
     train = load_data(path=train_path)
@@ -33,10 +40,17 @@ def run_pipeline(train_path: Path,
     x_train = train.loc[:, train.columns != target_name].to_numpy()
     y_train = train[target_name].to_numpy()
 
+    study = hyperparameter_optimization(x_train=x_train,
+                                        y_train=y_train,
+                                        random_state=random_state,
+                                        cv=cv,
+                                        n_trials=n_trials)
+
     model_pipeline = Pipeline(
         steps=[('transformer', features_transformer),
-               ('clf', RandomForestClassifier(random_state=random_state,
-                                              class_weight='balanced'))])
+               ('clf', RandomForestClassifier(**study.best_params,
+                                              n_jobs=-1,
+                                              random_state=random_state))])
 
     model_pipeline.fit(x_train, y_train)
 
@@ -82,7 +96,9 @@ if __name__ == '__main__':
     run_pipeline(train_path=train_path,
                  target_name=target_name,
                  random_state=int(config_pipeline['RANDOM_STATE']),
-                 model_name=model_name)
+                 model_name=model_name,
+                 n_trials=int(config_pipeline['OPTIMIZATION_TRIALS']),
+                 cv=int(config_pipeline['OPTIMIZATION_CV']))
 
     if config_pipeline.getboolean('TEST'):
 
