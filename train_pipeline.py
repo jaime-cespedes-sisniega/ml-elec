@@ -24,8 +24,8 @@ def run_pipeline(train_path: Path,
     :type target_name: str
     :param random_state: model pipeline random state
     :type random_state: int
-    :param pipeline_path: path where pipeline will be stored
-    :type pipeline_path: Path
+    :param model_name: model name
+    :type model_name: str
     :rtype: None
     """
     train = load_data(path=train_path)
