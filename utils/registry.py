@@ -1,7 +1,7 @@
 import os
 
 import mlflow
-import sklearn
+import sklearn.pipeline
 
 
 def set_model_registry_server(mlflow_host: str,

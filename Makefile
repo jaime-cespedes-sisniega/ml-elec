@@ -11,7 +11,7 @@ install:
 				              -r requirements/tox_requirements.txt
 
 pipeline:
-	$(VENV)/bin/python train_pipeline.py
+	$(VENV)/bin/python run_pipeline.py
 
 clean_data:
 	rm -f data/raw/*.csv

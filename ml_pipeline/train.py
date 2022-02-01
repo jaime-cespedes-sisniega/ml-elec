@@ -8,13 +8,13 @@ from utils.data import load_data
 from utils.registry import save_model
 
 
-def run_pipeline(train_path: Path,
-                 target_name: str,
-                 random_state: int,
-                 model_name: str,
-                 n_trials: int,
-                 cv: int) -> None:
-    """Run pipeline
+def train_pipeline(train_path: Path,
+                   target_name: str,
+                   random_state: int,
+                   model_name: str,
+                   n_trials: int,
+                   cv: int) -> None:
+    """Train pipeline
 
     :param train_path: path where train data is stored
     :type train_path: Path
