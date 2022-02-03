@@ -1,11 +1,15 @@
 from pathlib import Path
 
+from ml_pipeline.drift import fit_drift_detector
 from ml_pipeline.hyperparameter_optimization import hyperparameter_optimization
 from ml_pipeline.preprocessors import features_transformer
+import mlflow
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from utils.data import load_data
-from utils.registry import save_model
+from utils.registry import (save_drift_detector,
+                            save_model)
 
 
 def train_pipeline(train_path: Path,
@@ -42,13 +46,27 @@ def train_pipeline(train_path: Path,
                                         cv=cv,
                                         n_trials=n_trials)
 
-    model_pipeline = Pipeline(
-        steps=[('transformer', features_transformer),
-               ('clf', RandomForestClassifier(**study.best_params,
-                                              n_jobs=-1,
-                                              random_state=random_state))])
+    with mlflow.start_run():
 
-    model_pipeline.fit(x_train, y_train)
+        model_pipeline = Pipeline(
+            steps=[('transformer', features_transformer),
+                   ('clf', RandomForestClassifier(**study.best_params,
+                                                  n_jobs=-1,
+                                                  random_state=random_state))])
 
-    save_model(model_pipeline=model_pipeline,
-               model_name=model_name)
+        model_pipeline.fit(x_train, y_train)
+
+        save_model(model_pipeline=model_pipeline,
+                   model_name=model_name)
+
+        x_sample_idx = np.random.choice(x_train.shape[0],
+                                        size=int(0.1 * x_train.shape[0]),
+                                        replace=False)
+        x_ref = x_train[x_sample_idx, :]
+
+        detector = fit_drift_detector(x_ref=x_ref,
+                                      ert=96,
+                                      window_size=12,
+                                      n_bootstraps=10000)
+
+        save_drift_detector(detector=detector)

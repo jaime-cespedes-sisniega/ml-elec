@@ -1,5 +1,8 @@
 import os
+import pickle
+import tempfile
 
+import alibi_detect
 import mlflow
 import sklearn.pipeline
 
@@ -61,8 +64,27 @@ def load_model(model_name: str,
     :type model_name: str
     :param stage: model´s stage
     :type stage: str
+    :return model pipeline object
+    :rtype sklearn.pipeline.Pipeline
     """
     model_pipeline = mlflow.sklearn.load_model(
         model_uri=f"models:/{model_name}/{stage}"
     )
     return model_pipeline
+
+
+def save_drift_detector(detector: alibi_detect.cd.MMDDriftOnline) -> None:
+    """Save drift detector to MLflow
+
+    :param detector: drift detector object
+    :type detector: alibi_detect.cd.MMDDriftOnline
+    :rtype None
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        # XXX: alibi_detect.utils.saving.save_detector
+        # does not support certain detectors
+        detector_file_path = f'{tmp}/detector.pkl'
+        with open(detector_file_path, 'wb') as f:
+            pickle.dump(obj=detector,
+                        file=f)
+        mlflow.log_artifact(detector_file_path)
