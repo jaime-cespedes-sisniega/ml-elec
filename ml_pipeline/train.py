@@ -17,7 +17,11 @@ def train_pipeline(train_path: Path,
                    random_state: int,
                    model_name: str,
                    n_trials: int,
-                   cv: int) -> None:
+                   cv: int,
+                   ert: int,
+                   window_size: int,
+                   n_bootstrap: int,
+                   drift_sample_ratio: float) -> None:
     """Train pipeline
 
     :param train_path: path where train data is stored
@@ -32,6 +36,14 @@ def train_pipeline(train_path: Path,
     :type n_trials: int
     :param cv: cross-validation folds
     :type cv: int
+    :param ert: expected run time
+    :type ert: int
+    :param window_size: drift window size
+    :type window_size: int
+    :param n_bootstrap: number of bootstrap iterations
+    :type n_bootstrap: int
+    :param drift_sample_ratio: drift sample ratio for reference data
+    :type drift_sample_ratio: float
     :rtype: None
     """
     train = load_data(path=train_path)
@@ -60,13 +72,14 @@ def train_pipeline(train_path: Path,
                    model_name=model_name)
 
         x_sample_idx = np.random.choice(x_train.shape[0],
-                                        size=int(0.1 * x_train.shape[0]),
+                                        size=int(drift_sample_ratio
+                                                 * x_train.shape[0]),
                                         replace=False)
         x_ref = x_train[x_sample_idx, :]
 
         detector = fit_drift_detector(x_ref=x_ref,
-                                      ert=96,
-                                      window_size=12,
-                                      n_bootstraps=10000)
+                                      ert=ert,
+                                      window_size=window_size,
+                                      n_bootstraps=n_bootstrap)
 
         save_drift_detector(detector=detector)

@@ -36,13 +36,18 @@ if __name__ == '__main__':
         minio_password=config_model_registry['MINIO_PASSWORD'])
 
     model_name = config_model_registry['MODEL_NAME']
+    config_drift = config['DRIFT']
 
     train_pipeline(train_path=train_path,
                    target_name=target_name,
                    random_state=int(config_pipeline['RANDOM_STATE']),
                    model_name=model_name,
                    n_trials=int(config_pipeline['OPTIMIZATION_TRIALS']),
-                   cv=int(config_pipeline['OPTIMIZATION_CV']))
+                   cv=int(config_pipeline['OPTIMIZATION_CV']),
+                   ert=int(config_drift['ERT']),
+                   window_size=int(config_drift['WINDOW_SIZE']),
+                   n_bootstrap=int(config_drift['N_BOOTSTRAP']),
+                   drift_sample_ratio=float(config_drift['SAMPLE_RATIO']))
 
     if config_pipeline.getboolean('TEST'):
 
