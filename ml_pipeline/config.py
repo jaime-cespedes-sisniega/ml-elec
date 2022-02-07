@@ -50,6 +50,12 @@ class PipelineSettings(BaseSettings):
                                      f'must be a csv file')
         return value
 
+    @validator('OPTIMIZATION_CV')
+    def cross_validation_value(cls, value):
+        if value < 2:
+            raise ValueError('OPTIMIZATION_CV value must be greater than 1')
+        return value
+
 
 class ModelRegistrySettings(BaseSettings):
     """Model registry settings class
