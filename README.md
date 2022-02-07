@@ -3,7 +3,15 @@ This repository aims to generate a simple Machine Learning pipeline using an ope
 
 ## Settings
 
-Through the `config.ini` file different parameters related to the pipeline can be configured. For example, you can set hyperparameter tuning arguments, use the test set with the generated model to measure its performance, etc. Model registry configuration can also be set in this file.
+Modify and complete `.env.example` file to set your data, pipeline, MinIO and MLflow configuration parameters.
+
+Rename `.env.example` to `.env`.
+
+```bash
+mv .env.example .env
+```
+
+Through the `.env` file different parameters related to the pipeline can be configured. For example, you can set hyperparameter tuning arguments, use the test set with the generated model to measure its performance, etc. Model registry configuration can also be set in this file.
 
 The model will be stored in [MLflow´s model registry](https://github.com/mlflow/mlflow/).
 
