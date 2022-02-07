@@ -2,11 +2,10 @@ from pathlib import Path
 from typing import Optional
 
 from pydantic import (BaseSettings,
-                      root_validator,
                       validator)
 
 
-class ExtensionError(Exception):
+class FileExtensionError(Exception):
     pass
 
 
@@ -37,17 +36,18 @@ class PipelineSettings(BaseSettings):
     OPTIMIZATION_CV: int
     TEST: bool
 
-    @root_validator
-    def test_existing_file(cls, values):
-        if values['TEST'] and not values['TEST_FILE_NAME']:
+    @validator('TEST')
+    def test_existing_file(cls, value, values):
+        if value and not values['TEST_FILE_NAME']:
             raise NonExistingTestFileError('TEST_FILE_NAME must be set '
                                            'if TEST equals to True')
         return values
 
-    @validator('TRAIN_FILE_NAME')
-    def train_file_name_extension(cls, value):
-        if not value.endswith('.csv'):
-            raise ExtensionError('TRAIN_FILE_NAME must be a csv file')
+    @validator('TRAIN_FILE_NAME', 'TEST_FILE_NAME')
+    def file_name_extension(cls, value, **kwargs):
+        if value and not value.endswith('.csv'):
+            raise FileExtensionError(f'{kwargs["field"].name} '
+                                     f'must be a csv file')
         return value
 
 
