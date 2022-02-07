@@ -6,10 +6,14 @@ from pydantic import (BaseSettings,
 
 
 class FileExtensionError(Exception):
+    """FileExtensionError Exception"""
+
     pass
 
 
 class NonExistingTestFileError(Exception):
+    """NonExistingTestFileError Exception"""
+
     pass
 
 
@@ -37,27 +41,27 @@ class PipelineSettings(BaseSettings):
     TEST: bool
 
     @validator('TEST')
-    def test_existing_file(cls, value, values):
+    def _test_existing_file(cls, value, values):  # noqa: N805
         if value and not values['TEST_FILE_NAME']:
             raise NonExistingTestFileError('TEST_FILE_NAME must be set '
                                            'if TEST equals to True')
         return values
 
     @validator('TRAIN_FILE_NAME', 'TEST_FILE_NAME')
-    def file_name_extension(cls, value, **kwargs):
+    def _file_name_extension(cls, value, **kwargs):  # noqa: N805
         if value and not value.endswith('.csv'):
             raise FileExtensionError(f'{kwargs["field"].name} '
                                      f'must be a csv file')
         return value
 
     @validator('OPTIMIZATION_TRIALS')
-    def trials_value(cls, value):
+    def _trials_value(cls, value):  # noqa: N805
         if value < 1:
             raise ValueError('OPTIMIZATION_CV value must be greater than 0')
         return value
 
     @validator('OPTIMIZATION_CV')
-    def cross_validation_value(cls, value):
+    def _cross_validation_value(cls, value):  # noqa: N805
         if value < 2:
             raise ValueError('OPTIMIZATION_CV value must be greater than 1')
         return value
@@ -92,7 +96,7 @@ class DriftSettings(BaseSettings):
     SAMPLE_RATIO: float
 
     @validator('SAMPLE_RATIO')
-    def sample_ratio_range(cls, value):
+    def _sample_ratio_range(cls, value):  # noqa: N805
         if not 0.0 < value <= 1.0:
             raise ValueError('SAMPLE_RATIO value must be in (0, 1]')
         return value
