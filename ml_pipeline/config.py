@@ -4,6 +4,10 @@ from pydantic import (BaseSettings,
                       validator)
 
 
+class ExtensionError(Exception):
+    pass
+
+
 class DataSettings(BaseSettings):
     """Database settings class
 
@@ -26,6 +30,12 @@ class PipelineSettings(BaseSettings):
     OPTIMIZATION_TRIALS: int
     OPTIMIZATION_CV: int
     TEST: bool
+
+    @validator('TRAIN_FILE_NAME')
+    def train_file_name_extension(cls, value):
+        if not value.endswith('.csv'):
+            raise ExtensionError('TRAIN_FILE_NAME must be a csv file')
+        return value
 
 
 class ModelRegistrySettings(BaseSettings):
