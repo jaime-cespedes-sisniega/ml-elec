@@ -1,10 +1,16 @@
 from pathlib import Path
+from typing import Optional
 
 from pydantic import (BaseSettings,
+                      root_validator,
                       validator)
 
 
 class ExtensionError(Exception):
+    pass
+
+
+class NonExistingTestFileError(Exception):
     pass
 
 
@@ -24,12 +30,19 @@ class PipelineSettings(BaseSettings):
     """
 
     TRAIN_FILE_NAME: str
-    TEST_FILE_NAME: str
+    TEST_FILE_NAME: Optional[str]
     TARGET_NAME: str
     RANDOM_STATE: int
     OPTIMIZATION_TRIALS: int
     OPTIMIZATION_CV: int
     TEST: bool
+
+    @root_validator
+    def test_existing_file(cls, values):
+        if values['TEST'] and not values['TEST_FILE_NAME']:
+            raise NonExistingTestFileError('TEST_FILE_NAME must be set '
+                                           'if TEST equals to True')
+        return values
 
     @validator('TRAIN_FILE_NAME')
     def train_file_name_extension(cls, value):
