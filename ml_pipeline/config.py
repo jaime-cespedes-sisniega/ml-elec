@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from pydantic import BaseSettings
+from pydantic import (BaseSettings,
+                      validator)
 
 
 class DataSettings(BaseSettings):
@@ -54,6 +55,12 @@ class DriftSettings(BaseSettings):
     WINDOW_SIZE: int
     N_BOOTSTRAP: int
     SAMPLE_RATIO: float
+
+    @validator('SAMPLE_RATIO')
+    def sample_ratio_range(cls, value):
+        if not 0.0 < value <= 1.0:
+            raise ValueError('SAMPLE_RATIO value must be in (0, 1]')
+        return value
 
 
 class Settings(BaseSettings):
