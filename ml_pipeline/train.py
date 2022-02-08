@@ -17,7 +17,6 @@ def train_pipeline(train_path: Path,
                    random_state: int,
                    model_name: str,
                    n_trials: int,
-                   cv: int,
                    ert: int,
                    window_size: int,
                    n_bootstrap: int,
@@ -34,8 +33,6 @@ def train_pipeline(train_path: Path,
     :type model_name: str
     :param n_trials: optimization trials
     :type n_trials: int
-    :param cv: cross-validation folds
-    :type cv: int
     :param ert: expected run time
     :type ert: int
     :param window_size: drift window size
@@ -55,7 +52,6 @@ def train_pipeline(train_path: Path,
                                         y_train=y_train,
                                         experiment_name=model_name,
                                         random_state=random_state,
-                                        cv=cv,
                                         n_trials=n_trials)
 
     with mlflow.start_run():
@@ -63,6 +59,7 @@ def train_pipeline(train_path: Path,
         model_pipeline = Pipeline(
             steps=[('transformer', features_transformer),
                    ('clf', RandomForestClassifier(**study.best_params,
+                                                  n_estimators=200,
                                                   n_jobs=-1,
                                                   random_state=random_state))])
 

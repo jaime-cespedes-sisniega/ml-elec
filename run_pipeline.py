@@ -28,7 +28,6 @@ if __name__ == '__main__':
                    random_state=settings.PIPELINE.RANDOM_STATE,
                    model_name=settings.MODEL_REGISTRY.MODEL_NAME,
                    n_trials=settings.PIPELINE.OPTIMIZATION_TRIALS,
-                   cv=settings.PIPELINE.OPTIMIZATION_CV,
                    ert=settings.DRIFT.ERT,
                    window_size=settings.DRIFT.WINDOW_SIZE,
                    n_bootstrap=settings.DRIFT.N_BOOTSTRAP,

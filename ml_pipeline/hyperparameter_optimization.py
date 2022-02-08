@@ -5,15 +5,14 @@ import mlflow
 import numpy as np
 import optuna
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import f1_score, make_scorer
-from sklearn.model_selection import cross_val_score
+from sklearn.metrics import f1_score
 from sklearn.pipeline import Pipeline
 
 
 class HyperparametersDict(TypedDict):
-    """HyperparametersDict class
+    """Hyperparameters Dict class
 
-    HyperparametersDict class to represent hyperparameters dict
+    Hyperparameters Dict class to represent hyperparameters dict
     """
 
     criterion: str
@@ -55,8 +54,6 @@ class Objective:
         self.y = y
         self.random_state = random_state
         self.cv = cv
-        self.scorer = make_scorer(score_func=f1_score,
-                                  pos_label='UP')
         mlflow.set_experiment(experiment_name)
 
     def _suggest_hyperparameters(self,
@@ -109,18 +106,29 @@ class Objective:
                 steps=[('transformer', features_transformer),
                        ('clf', RandomForestClassifier(
                            **params,
+                           n_estimators=200,
+                           oob_score=True,
                            random_state=self.random_state))])
 
-            score = cross_val_score(estimator=model_pipeline,
-                                    X=self.x,
-                                    y=self.y,
-                                    n_jobs=-1,
-                                    cv=self.cv,
-                                    scoring=self.scorer).mean()
+            model_pipeline.fit(X=self.x,
+                               y=self.y)
+
+            y_pred = np.argmax(model_pipeline['clf'].oob_decision_function_,
+                               axis=1)
+            y_pred = np.select([y_pred == 0, y_pred == 1],
+                               [*model_pipeline['clf'].classes_],
+                               y_pred).astype('object')
+
+            f1_metric = f1_score(y_true=self.y,
+                                 y_pred=y_pred,
+                                 pos_label='UP')
+            oob_error_metric = 1 - model_pipeline['clf'].oob_score_
 
             mlflow.log_params(params)
-            mlflow.log_metric('f1_score', score)
-        return score
+            mlflow.log_metric('f1_score', f1_metric)
+            mlflow.log_metric('oob_error', oob_error_metric)
+
+        return f1_metric
 
 
 def hyperparameter_optimization(x_train: np.ndarray,

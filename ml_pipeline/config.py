@@ -37,7 +37,6 @@ class PipelineSettings(BaseSettings):
     TARGET_NAME: str
     RANDOM_STATE: int
     OPTIMIZATION_TRIALS: int
-    OPTIMIZATION_CV: int
     TEST: bool
 
     @validator('TEST')
@@ -58,12 +57,6 @@ class PipelineSettings(BaseSettings):
     def _trials_value(cls, value):  # noqa: N805
         if value < 1:
             raise ValueError('OPTIMIZATION_CV value must be greater than 0')
-        return value
-
-    @validator('OPTIMIZATION_CV')
-    def _cross_validation_value(cls, value):  # noqa: N805
-        if value < 2:
-            raise ValueError('OPTIMIZATION_CV value must be greater than 1')
         return value
 
 
