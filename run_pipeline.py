@@ -15,6 +15,7 @@ if __name__ == '__main__':
         mlflow_port=settings.MODEL_REGISTRY.MLFLOW_PORT,
         mlflow_username=settings.MODEL_REGISTRY.MLFLOW_USERNAME,
         mlflow_password=settings.MODEL_REGISTRY.MLFLOW_PASSWORD,
+        mlflow_server_cert_path=settings.MODEL_REGISTRY.MLFLOW_TRACKING_SERVER_CERT_PATH,
         minio_host=settings.MODEL_REGISTRY.MINIO_HOST,
         minio_port=settings.MODEL_REGISTRY.MINIO_PORT,
         minio_username=settings.MODEL_REGISTRY.MINIO_USERNAME,

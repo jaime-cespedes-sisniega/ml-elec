@@ -70,6 +70,7 @@ class ModelRegistrySettings(BaseSettings):
     MLFLOW_PORT: int
     MLFLOW_USERNAME: str
     MLFLOW_PASSWORD: str
+    MLFLOW_TRACKING_SERVER_CERT_PATH: str
     MODEL_NAME: str
     MINIO_HOST: str
     MINIO_PORT: int

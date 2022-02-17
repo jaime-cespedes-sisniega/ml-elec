@@ -11,10 +11,11 @@ def set_model_registry_server(mlflow_host: str,
                               mlflow_port: int,
                               mlflow_username: str,
                               mlflow_password: str,
+                              mlflow_server_cert_path: str,
                               minio_host: str,
                               minio_port: int,
                               minio_username: str,
-                              minio_password) -> None:
+                              minio_password: str) -> None:
     """Set model registry server (MLflow)
 
     :param mlflow_host: mlflow server host
@@ -25,6 +26,8 @@ def set_model_registry_server(mlflow_host: str,
     :type mlflow_username: str
     :param mlflow_password: mlflow password
     :type mlflow_password: str
+    :param mlflow_server_cert_path: mlflow server certificate path
+    :type mlflow_server_cert_path: str
     :param minio_host: minio server host
     :type minio_host: str
     :param minio_port: minio server port
@@ -34,9 +37,12 @@ def set_model_registry_server(mlflow_host: str,
     :param minio_password: minio password
     :type minio_password: str
     """
-    mlflow.set_tracking_uri(f'http://{mlflow_host}:{mlflow_port}')
+
+    mlflow.set_tracking_uri(f'https://{mlflow_host}:{mlflow_port}')
     os.environ['MLFLOW_TRACKING_USERNAME'] = mlflow_username
     os.environ['MLFLOW_TRACKING_PASSWORD'] = mlflow_password
+    os.environ['MLFLOW_TRACKING_INSECURE_TLS'] = 'false'
+    os.environ['MLFLOW_TRACKING_SERVER_CERT_PATH'] = mlflow_server_cert_path
     os.environ['MLFLOW_S3_ENDPOINT_URL'] = f'http://{minio_host}:{minio_port}'
     os.environ['AWS_ACCESS_KEY_ID'] = minio_username
     os.environ['AWS_SECRET_ACCESS_KEY'] = minio_password
