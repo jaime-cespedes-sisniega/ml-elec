@@ -43,9 +43,10 @@ def set_model_registry_server(mlflow_host: str,
     os.environ['MLFLOW_TRACKING_PASSWORD'] = mlflow_password
     os.environ['MLFLOW_TRACKING_INSECURE_TLS'] = 'false'
     os.environ['MLFLOW_TRACKING_SERVER_CERT_PATH'] = mlflow_server_cert_path
-    os.environ['MLFLOW_S3_ENDPOINT_URL'] = f'http://{minio_host}:{minio_port}'
+    os.environ['MLFLOW_S3_ENDPOINT_URL'] = f'https://{minio_host}:{minio_port}'
     os.environ['AWS_ACCESS_KEY_ID'] = minio_username
     os.environ['AWS_SECRET_ACCESS_KEY'] = minio_password
+    os.environ['AWS_CA_BUNDLE'] = mlflow_server_cert_path
 
 
 def save_model(model_pipeline: sklearn.pipeline.Pipeline,
