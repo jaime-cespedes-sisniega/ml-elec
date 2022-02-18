@@ -37,7 +37,6 @@ def set_model_registry_server(mlflow_host: str,
     :param minio_password: minio password
     :type minio_password: str
     """
-
     mlflow.set_tracking_uri(f'https://{mlflow_host}:{mlflow_port}')
     os.environ['MLFLOW_TRACKING_USERNAME'] = mlflow_username
     os.environ['MLFLOW_TRACKING_PASSWORD'] = mlflow_password
